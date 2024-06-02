@@ -26,17 +26,17 @@ jobs:
       - name: Instalacion de dependencias
         run: npm install
 
-      - name: Crear directorio de despliegue
-        run: mkdir -p gh-pages
-
       - name: Iniciar ESLint
-        run: npx eslint src/**/*.js
+        run: npx eslint docs/**/*.js
 
       - name: Build project
         run: npm run build
 
-      - name: Copiar archivos de src a gh-pages
-        run: cp -r src/* gh-pages/
+      - name: Crear directorio de despliegue
+        run: mkdir -p gh-pages
+
+      - name: Copiar archivos de docs a gh-pages
+        run: cp -r docs/* gh-pages/
 
       - name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/main'
