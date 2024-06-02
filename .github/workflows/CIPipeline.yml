@@ -46,4 +46,10 @@ jobs:
       - name: Notificaciones en Slack
         if: failure()
         run: |
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"CI/CD Pipeline for branch ${{ github.ref }} completed with status: ${{ job.status }}"}' ${{ secrets.SLACK_WEBHOOK_URL }}
+          curl -X POST -H 'Content-type: application/json' --data '{
+            "text": "Error during CI/CD Pipeline for branch ${{ github.ref }}:
+              - Status: ${{ job.status }}
+              - Commit: ${{ github.sha }}
+              - Autor: ${{ github.actor }}
+              - Mensaje del Commit: ${{ github.event.head_commit.message }}"
+          }' ${{ secrets.SLACK_WEBHOOK_URL }}
