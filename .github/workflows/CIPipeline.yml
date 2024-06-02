@@ -36,20 +36,18 @@ jobs:
         run: cp -r docs/* gh-pages/
 
       - name: Deploy to GitHub Pages
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test'
         id: deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.ACTIONS_DEPLOY_KEY }}
           publish_dir: ./gh-pages
-          
-      - name: Notificaciones en Slack
+
+      - name: Notificaciones en Slack (Error en Despliegue)
         if: failure()
         run: |
-          curl -X POST -H 'Content-type: application/json' --data '{
-            "text": "Error during CI/CD Pipeline for branch ${{ github.ref }}:
-              - Status: ${{ job.status }}
-              - Commit: ${{ github.sha }}
-              - Autor: ${{ github.actor }}
-              - Mensaje del Commit: ${{ github.event.head_commit.message }}"
-          }' ${{ secrets.SLACK_WEBHOOK_URL }}
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"CI/CD Pipeline for branch ${{ github.ref }} failed during deployment."}' ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Notificaciones en Slack (Despliegue Exitoso)
+        if: success() && github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test'
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"CI/CD Pipeline for branch ${{ github.ref }} deployed successfully."}' ${{ secrets.SLACK_WEBHOOK_URL }}
