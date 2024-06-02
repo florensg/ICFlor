@@ -7,7 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -24,5 +25,6 @@
     "@eslint/js": "^9.4.0",
     "eslint": "^7.32.0",
     "globals": "^15.3.0"
-  }
+  },
+  "build:src": "tu_comando_de_construcción_src"
 }
