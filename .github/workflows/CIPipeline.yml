@@ -26,8 +26,8 @@ jobs:
       - name: Instalacion de dependencias
         run: npm install
 
-      - name: Crear directorio dist
-        run: mkdir -p dist
+      - name: Crear directorio de despliegue
+        run: mkdir -p gh-pages
 
       - name: Iniciar ESLint
         run: npx eslint src/**/*.js
@@ -35,12 +35,15 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Copiar archivos de src a gh-pages
+        run: cp -r src/* gh-pages/
+
       - name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-          publish_dir: ./dist
+          publish_dir: ./gh-pages
 
       - name: Deploy to GitHub Pages (Test Environment)
         if: github.ref == 'refs/heads/test'
@@ -48,7 +51,7 @@ jobs:
         with:
           github_token: ${{ secrets.ACTIONS_DEPLOY_KEY }}
           publish_branch: test
-          publish_dir: ./dist
+          publish_dir: ./gh-pages
 
       - name: Notificaciones en Slack
         if: always()
