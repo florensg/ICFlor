@@ -29,6 +29,9 @@ jobs:
       - name: Iniciar ESLint
         run: npx eslint docs/**/*.js
       
+      - name: Run tests
+        run: npm test
+
       - name: Crear directorio de despliegue
         run: mkdir -p gh-pages
 
