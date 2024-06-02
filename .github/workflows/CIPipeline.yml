@@ -36,21 +36,14 @@ jobs:
         run: cp -r docs/* gh-pages/
 
       - name: Deploy to GitHub Pages
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test'
+        id: deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.ACTIONS_DEPLOY_KEY }}
           publish_dir: ./gh-pages
-
-      - name: Deploy to GitHub Pages (Test Environment)
-        if: github.ref == 'refs/heads/test'
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-          publish_branch: test
-          publish_dir: ./gh-pages
-
+          
       - name: Notificaciones en Slack
-        if: always()
+        if: failure()
         run: |
           curl -X POST -H 'Content-type: application/json' --data '{"text":"CI/CD Pipeline for branch ${{ github.ref }} completed with status: ${{ job.status }}"}' ${{ secrets.SLACK_WEBHOOK_URL }}
