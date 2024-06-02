@@ -28,10 +28,6 @@ jobs:
 
       - name: Iniciar ESLint
         run: npx eslint docs/**/*.js
-
-      - name: Build project
-        run: |
-          git diff --quiet || npm run build
       
       - name: Crear directorio de despliegue
         run: mkdir -p gh-pages
