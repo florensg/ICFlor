@@ -20,3 +20,8 @@ jobs:
 
     - name: Iniciar ESLint
       run: npx eslint src/**/*.js
+
+    - name: Notificaciones en Slack
+      if: failure()
+      run: |
+        curl -X POST -H 'Content-type: application/json' --data '{"text":"CI Pipeline failed!"}' ${{ secrets.SLACK_WEBHOOK_URL }}
