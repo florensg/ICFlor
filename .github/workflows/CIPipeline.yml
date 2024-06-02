@@ -26,20 +26,23 @@ jobs:
       - name: Instalacion de dependencias
         run: npm install
 
+      - name: Crear directorio dist
+        run: mkdir -p dist
+
       - name: Iniciar ESLint
         run: npx eslint src/**/*.js
 
-      - name: Build del Proyecto
+      - name: Build project
         run: npm run build
 
-      - name: Deploy en GitHub Pages (Entorno de Produccion)
+      - name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
 
-      - name: Deploy en GitHub Pages (Entorno de Test)
+      - name: Deploy to GitHub Pages (Test Environment)
         if: github.ref == 'refs/heads/test'
         uses: peaceiris/actions-gh-pages@v3
         with:
@@ -48,6 +51,6 @@ jobs:
           publish_dir: ./dist
 
       - name: Notificaciones en Slack
-        if: failure() || success()
+        if: always()
         run: |
           curl -X POST -H 'Content-type: application/json' --data '{"text":"CI/CD Pipeline for branch ${{ github.ref }} completed with status: ${{ job.status }}"}' ${{ secrets.SLACK_WEBHOOK_URL }}
