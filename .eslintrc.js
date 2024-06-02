@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-undef
 module.exports = {
     "env": {
         "browser": true,
@@ -11,5 +10,7 @@ module.exports = {
         "sourceType": "module"
     },
     "rules": {
+        // Comenta o elimina esta línea
+        // "slots.times.passes[passIndex][type] ??= {};"
     }
 };
