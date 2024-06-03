@@ -28,17 +28,20 @@ jobs:
 
       - name: Iniciar ESLint
         run: npx eslint docs/**/*.js
-      
+
       - name: Run tests
         run: npm test
 
       - name: Crear directorio de despliegue
+        if: success()
         run: mkdir -p gh-pages
 
       - name: Copiar archivos de docs a gh-pages
+        if: success()
         run: cp -r docs/* gh-pages/
 
       - name: Deploy to GitHub Pages
+        if: success() && github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test'
         id: deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
