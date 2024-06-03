@@ -1,13 +1,16 @@
 module.exports = {
-    "env": {
-        "browser": true,
-        "es2017": true // Cambiado de "es2021" a "es2017"
+    env: {
+      browser: true,
+      es2021: true,
+      node: true,
     },
-    "extends": "eslint:recommended",
-    "overrides": [],
-    "parserOptions": {
-        "ecmaVersion": 8, // Cambiado de 12 a 8
-        "sourceType": "module"
+    extends: 'eslint:recommended',
+    parserOptions: {
+      ecmaVersion: 12,
+      sourceType: 'module',
     },
-    "rules": {}
-};
+    rules: {
+      'no-undef': 'error',
+    },
+  };
+  

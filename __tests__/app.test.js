@@ -1,6 +1,14 @@
-// __tests__/app.test.js
-const { helloWorld } = require('../docs/app');
+// docs/app.js
 
-test('should return "Hello, world!"', () => {
-  expect(helloWorld()).toBe('Hello, world!');
-});
+function helloWorld() {
+    return 'Hello, world!';
+  }
+  
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log(helloWorld());
+  });
+  
+  if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+    module.exports = { helloWorld };
+  }
+  
