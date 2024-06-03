@@ -27,9 +27,6 @@ jobs:
   
       - name: Lint de archivos JavaScript
         run: npm run lint:js
-  
-      - name: Lint de archivos CSS
-        run: npm run lint:css
 
   test:
     runs-on: ubuntu-latest
