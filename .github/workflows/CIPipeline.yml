@@ -11,49 +11,74 @@ on:
       - test
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout del repositorio
         uses: actions/checkout@v2
 
-      - name: Set up de Node.js
+      - name: Configuracion de Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      
+      - name: Instalacion de dependencias
+        run: npm install
+  
+      - name: Lint de archivos JavaScript
+        run: npm run lint:js
+  
+      - name: Lint de archivos CSS
+        run: npm run lint:css
+
+  test:
+    runs-on: ubuntu-latest
+
+    name: Ejecución de Pruebas
+    needs: lint
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v2
+
+      - name: Configuracion de Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '14'
 
-      - name: Instalacion de dependencias
+      - name: Instalar dependencias
         run: npm install
 
-      - name: Iniciar ESLint
-        run: npx eslint docs/**/*.js
-
-      - name: Run tests
+      - name: Ejecutar pruebas
         run: npm test
 
+  deploy:
+    runs-on: ubuntu-latest
+    name: Despliegue en GitHub Pages
+    needs: test
+    steps:
+      - name: Obtener código fuente
+        uses: actions/checkout@v2
+
       - name: Crear directorio de despliegue
-        if: success()
         run: mkdir -p gh-pages
 
       - name: Copiar archivos de docs a gh-pages
-        if: success()
         run: cp -r docs/* gh-pages/
 
-      - name: Deploy to GitHub Pages
-        if: success() && github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test'
+      - name: Desplegar en GitHub Pages
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test'
         id: deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.ACTIONS_DEPLOY_KEY }}
           publish_dir: ./gh-pages
 
-      - name: Notificaciones en Slack (Error en Despliegue)
-        if: failure()
-        run: |
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"CI/CD Pipeline for branch ${{ github.ref }} failed during deployment."}' ${{ secrets.SLACK_WEBHOOK_URL }}
-
-      - name: Notificaciones en Slack (Despliegue Exitoso)
+      - name: Notificar en Slack (Despliegue Exitoso)
         if: success() && github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test'
         run: |
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"CI/CD Pipeline for branch ${{ github.ref }} deployed successfully."}' ${{ secrets.SLACK_WEBHOOK_URL }}
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"Pipeline CI/CD para la rama ${{ github.ref }} desplegada exitosamente."}' ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Notificar en Slack (Error en Despliegue)
+        if: failure()
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"Pipeline CI/CD para la rama ${{ github.ref }} falló durante el despliegue."}' ${{ secrets.SLACK_WEBHOOK_URL }}
