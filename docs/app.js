@@ -1,5 +1,5 @@
 function helloWorld() {
-  return 'Hello, florencia!';
+  return 'Hello, world!';
 }
 
 document.addEventListener('DOMContentLoaded', () => {
