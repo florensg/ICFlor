@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: Pipeline CI/CD
 
 on:
   push:
@@ -13,31 +13,31 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    name: Revisión de Estilo de Código
     steps:
-      - name: Checkout del repositorio
+      - name: Obtener código fuente
         uses: actions/checkout@v2
 
-      - name: Configuracion de Node.js
+      - name: Configurar Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '14'
-      
-      - name: Instalacion de dependencias
+
+      - name: Instalar dependencias
         run: npm install
-  
-      - name: Lint de archivos JavaScript
+
+      - name: Revisar archivos JavaScript
         run: npm run lint:js
 
   test:
     runs-on: ubuntu-latest
-
     name: Ejecución de Pruebas
     needs: lint
     steps:
-      - name: Checkout del repositorio
+      - name: Obtener código fuente
         uses: actions/checkout@v2
 
-      - name: Configuracion de Node.js
+      - name: Configurar Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '14'
@@ -71,7 +71,7 @@ jobs:
           publish_dir: ./gh-pages
 
       - name: Notificar en Slack (Despliegue Exitoso)
-        if: success() && github.ref == 'main' || github.ref == 'test'
+        if: success() && github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test'
         run: |
           curl -X POST -H 'Content-type: application/json' --data '{"text":"Pipeline CI/CD para la rama ${{ github.ref }} desplegada exitosamente."}' ${{ secrets.SLACK_WEBHOOK_URL }}
 
