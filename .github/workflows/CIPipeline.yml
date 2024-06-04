@@ -1,4 +1,4 @@
-name: Pipeline CI/CD
+name: CI/CD Pipeline
 
 on:
   push:
@@ -13,31 +13,31 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    name: Revisión de Estilo de Código
     steps:
-      - name: Obtener código fuente
+      - name: Checkout del repositorio
         uses: actions/checkout@v2
 
-      - name: Configurar Node.js
+      - name: Configuracion de Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '14'
-
-      - name: Instalar dependencias
+      
+      - name: Instalacion de dependencias
         run: npm install
-
-      - name: Revisar archivos JavaScript
+  
+      - name: Lint de archivos JavaScript
         run: npm run lint:js
 
   test:
     runs-on: ubuntu-latest
+
     name: Ejecución de Pruebas
     needs: lint
     steps:
-      - name: Obtener código fuente
+      - name: Checkout del repositorio
         uses: actions/checkout@v2
 
-      - name: Configurar Node.js
+      - name: Configuracion de Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '14'
@@ -63,14 +63,19 @@ jobs:
         run: cp -r docs/* gh-pages/
 
       - name: Desplegar en GitHub Pages
-        if: github.ref == 'main' || github.ref == 'test'
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test'
         id: deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.ACTIONS_DEPLOY_KEY }}
           publish_dir: ./gh-pages
 
+      - name: Notificar en Slack (Despliegue Exitoso)
+        if: success() && github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test'
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"Pipeline CI/CD para la rama ${{ github.ref }} desplegada exitosamente."}' ${{ secrets.SLACK_WEBHOOK_URL }}
+
       - name: Notificar en Slack (Error en Despliegue)
-        if: failure() && (github.ref == 'main' || github.ref == 'test')
+        if: failure()
         run: |
           curl -X POST -H 'Content-type: application/json' --data '{"text":"Pipeline CI/CD para la rama ${{ github.ref }} falló durante el despliegue."}' ${{ secrets.SLACK_WEBHOOK_URL }}
