@@ -63,7 +63,7 @@ jobs:
         run: cp -r docs/* gh-pages/
 
       - name: Desplegar en GitHub Pages
-        if: always() && success() && (github.ref == 'main' || github.ref == 'test')
+        if: always() && needs.test.result == 'success' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
         id: deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
@@ -73,7 +73,7 @@ jobs:
   notify_success:
     runs-on: ubuntu-latest
     needs: deploy
-    if: success() && (github.ref == 'main' || github.ref == 'test')
+    if: needs.deploy.result == 'success'
     steps:
       - name: Notificar en Slack (Despliegue Exitoso)
         run: |
@@ -81,9 +81,9 @@ jobs:
 
   notify_failure:
     runs-on: ubuntu-latest
-    needs: test
-    if: failure() && (github.ref == 'main' || github.ref == 'test')
+    needs: [test, deploy]
+    if: failure()
     steps:
       - name: Notificar en Slack (Error en Despliegue)
         run: |
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"Pipeline CI/CD para la rama ${{ github.ref }} falló durante el despliegue debido a que las pruebas no pasaron."}' ${{ secrets.SLACK_WEBHOOK_URL }}
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"Pipeline CI/CD para la rama ${{ github.ref }} falló durante el despliegue."}' ${{ secrets.SLACK_WEBHOOK_URL }}
