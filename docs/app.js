@@ -1,11 +1,10 @@
-function updateHeading() {
-  const heading = document.querySelector('h1');
-  heading.textContent = 'Hello, world!';
-  return heading.textContent;
+function helloWorld() {
+  return 'Hello, florens!';
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  updateHeading();
+  const header = document.getElementById('header');
+  header.textContent = helloWorld();
 });
 
-module.exports = { updateHeading };
+module.exports = { helloWorld };
