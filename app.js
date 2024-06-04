@@ -1,6 +1,6 @@
 function updateHeading() {
   const heading = document.querySelector('h1');
-  heading.textContent = 'Hello, florens!';
+  heading.textContent = 'Hello, world!';
   return heading.textContent;
 }
 
