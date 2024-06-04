@@ -76,6 +76,6 @@ jobs:
           curl -X POST -H 'Content-type: application/json' --data '{"text":"Pipeline CI/CD para la rama ${{ github.ref }} desplegada exitosamente."}' ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Notificar en Slack (Error en Despliegue)
-        if: failure() && github.ref == 'main' || github.ref == 'test'
+        if: failure()
         run: |
           curl -X POST -H 'Content-type: application/json' --data '{"text":"Pipeline CI/CD para la rama ${{ github.ref }} falló durante el despliegue."}' ${{ secrets.SLACK_WEBHOOK_URL }}
