@@ -1,4 +1,4 @@
-name: Pipeline CI/CD
+name: CI/CD Pipeline
 
 on:
   push:
@@ -13,31 +13,31 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    name: Revisión de Estilo de Código
     steps:
-      - name: Obtener código fuente
+      - name: Checkout del repositorio
         uses: actions/checkout@v2
 
-      - name: Configurar Node.js
+      - name: Configuracion de Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '14'
-
-      - name: Instalar dependencias
+      
+      - name: Instalacion de dependencias
         run: npm install
-
-      - name: Revisar archivos JavaScript
+  
+      - name: Lint de archivos JavaScript
         run: npm run lint:js
 
   test:
     runs-on: ubuntu-latest
+
     name: Ejecución de Pruebas
     needs: lint
     steps:
-      - name: Obtener código fuente
+      - name: Checkout del repositorio
         uses: actions/checkout@v2
 
-      - name: Configurar Node.js
+      - name: Configuracion de Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '14'
@@ -61,9 +61,6 @@ jobs:
 
       - name: Copiar archivos de docs a gh-pages
         run: cp -r docs/* gh-pages/
-
-      - name: Empaquetar aplicación
-        run: npm run package
 
       - name: Desplegar en GitHub Pages
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test'
