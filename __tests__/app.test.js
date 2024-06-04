@@ -4,7 +4,7 @@
 
 const { updateHeading } = require('../docs/app');
 
-test('should update the h1 text to "Hello, florens!"', () => {
+test('should update the h1 text to "Hello, world!"', () => {
     // Setup the DOM environment
     document.body.innerHTML = '<h1>Hello, world!</h1>';
     
@@ -15,6 +15,6 @@ test('should update the h1 text to "Hello, florens!"', () => {
     const heading = document.querySelector('h1');
     
     // Assertions
-    expect(result).toBe('Hello, florens!');
-    expect(heading.textContent).toBe('Hello, florens!');
+    expect(result).toBe('Hello, world!');
+    expect(heading.textContent).toBe('Hello, world!');
 });
