@@ -93,7 +93,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Enviar notificación de fallo a Slack
-        if: failure() || (needs.deploy.result == 'failure' && needs.test.result == 'failure')
+        if: failure() && needs.deploy.result == 'failure'
         uses: slackapi/slack-github-action@v1.26.0
         with:
           payload: |
