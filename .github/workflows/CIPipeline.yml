@@ -77,7 +77,6 @@ jobs:
     steps:
       - name: Obtener información del commit
         run: |
-          echo "Commit: $GITHUB_SHA"
           echo "Autor: $GITHUB_ACTOR"
           echo "Rama: $GITHUB_REF"
           jq -r '.commits[0].message' $GITHUB_EVENT_PATH
@@ -88,7 +87,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "El despliegue en la rama ${{ github.ref }} fue exitoso.\nCommit: ${{ github.sha }}\nMensaje del Commit: ${{ github.event.head_commit.message }}\nAutor: ${{ github.actor }}"
+              "text": "El despliegue en la rama ${{ github.ref }} fue exitoso.\nMensaje del Commit: ${{ github.event.head_commit.message }}\nAutor: ${{ github.actor }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -99,7 +98,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "El despliegue en la rama ${{ github.ref }} falló.\nCommit: ${{ github.sha }}\nMensaje del Commit: ${{ github.event.head_commit.message }}\nAutor: ${{ github.actor }}"
+              "text": "El despliegue en la rama ${{ github.ref }} falló.\nMensaje del Commit: ${{ github.event.head_commit.message }}\nAutor: ${{ github.actor }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
