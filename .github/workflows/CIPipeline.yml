@@ -85,7 +85,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "El despliegue en la rama ${{ github.ref }} fue exitoso.\nCommit: ${{ github.event.head_commit.message }}\nAutor: ${{ github.actor }}"
+              "text": "El despliegue en la rama ${{ github.ref }} fue exitoso. \nAutor: ${{ github.actor }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -96,7 +96,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "El despliegue en la rama ${{ github.ref }} falló.\nCommit: ${{ github.event.head_commit.message }}\nAutor: ${{ github.actor }}"
+              "text": "El despliegue en la rama ${{ github.ref }} falló.\nAutor: ${{ github.actor }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
