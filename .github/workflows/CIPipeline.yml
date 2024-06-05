@@ -76,8 +76,11 @@ jobs:
     if: always()
     steps:
       - name: Obtener información del commit
-        run: echo "::set-env name=COMMIT_INFO::$(git log -1 --pretty=%B)"
-        id: commit_info
+        run: |
+          echo "Commit: $GITHUB_SHA"
+          echo "Autor: $GITHUB_ACTOR"
+          echo "Rama: $GITHUB_REF"
+          jq -r '.commits[0].message' $GITHUB_EVENT_PATH
 
       - name: Enviar notificación de éxito a Slack
         if: success() && needs.deploy.result == 'success'
@@ -85,7 +88,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "El despliegue en la rama ${{ github.ref }} fue exitoso. \nAutor: ${{ github.actor }}"
+              "text": "El despliegue en la rama ${{ github.ref }} fue exitoso.\nCommit: ${{ github.sha }}\nMensaje del Commit: ${{ github.event.head_commit.message }}\nAutor: ${{ github.actor }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -96,7 +99,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "El despliegue en la rama ${{ github.ref }} falló.\nAutor: ${{ github.actor }}"
+              "text": "El despliegue en la rama ${{ github.ref }} falló.\nCommit: ${{ github.sha }}\nMensaje del Commit: ${{ github.event.head_commit.message }}\nAutor: ${{ github.actor }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
