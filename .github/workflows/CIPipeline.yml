@@ -52,6 +52,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Despliegue en GitHub Pages
     needs: test
+    if: always() && needs.test.result == 'success' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/DEV')
     steps:
       - name: Obtener código fuente
         uses: actions/checkout@v2
@@ -63,8 +64,6 @@ jobs:
         run: cp -r docs/* gh-pages/
 
       - name: Desplegar en GitHub Pages
-        if: always() && needs.test.result == 'success' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/DEV')
-        id: deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.ACTIONS_DEPLOY_KEY }}
@@ -74,47 +73,30 @@ jobs:
     runs-on: ubuntu-latest
     name: Notificaciones a Slack
     needs: [test, deploy]
+    if: always()
     steps:
+      - name: Obtener información del commit
+        run: echo "::set-env name=COMMIT_INFO::$(git log -1 --pretty=%B)"
+        id: commit_info
+
       - name: Enviar notificación de éxito a Slack
-        if: success()
-        id: slack_success
+        if: success() && needs.deploy.result == 'success'
         uses: slackapi/slack-github-action@v1.26.0
         with:
           payload: |
             {
-              "text": "Despliegue exitoso para la rama ${{ github.ref }}",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*Despliegue exitoso para la rama* ${{ github.ref }}\n*Estado:* Exitoso\n*Rama:* ${{ github.ref }}\n*Autor:* ${{ github.event.head_commit.author.name }}\n*Comentario:* ${{ github.event.head_commit.message }}\n<${{ github.event.pull_request.html_url || github.event.head_commit.url }}|Ver commit>"
-                  }
-                }
-              ]
+              "text": "El despliegue en la rama ${{ github.ref }} fue exitoso.\nCommit: ${{ github.event.head_commit.message }}\nAutor: ${{ github.actor }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
       - name: Enviar notificación de fallo a Slack
-        if: failure()
-        id: slack_failure
+        if: failure() || (needs.deploy.result == 'failure' && needs.test.result == 'success')
         uses: slackapi/slack-github-action@v1.26.0
         with:
           payload: |
             {
-              "text": "Fallo en el despliegue para la rama ${{ github.ref }}",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*Fallo en el despliegue para la rama* ${{ github.ref }}\n*Estado:* Fallo\n*Rama:* ${{ github.ref }}\n*Autor:* ${{ github.event.head_commit.author.name }}\n*Comentario:* ${{ github.event.head_commit.message }}\n<${{ github.event.pull_request.html_url || github.event.head_commit.url }}|Ver commit>"
-                  }
-                }
-              ]
+              "text": "El despliegue en la rama ${{ github.ref }} falló.\nCommit: ${{ github.event.head_commit.message }}\nAutor: ${{ github.actor }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
