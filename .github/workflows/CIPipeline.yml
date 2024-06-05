@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - main
-      - test
+      - DEV
   pull_request:
     branches:
       - main
-      - test
+      - DEV
 
 jobs:
   lint:
@@ -63,7 +63,7 @@ jobs:
         run: cp -r docs/* gh-pages/
 
       - name: Desplegar en GitHub Pages
-        if: always() && needs.test.result == 'success' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
+        if: always() && needs.test.result == 'success' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/DEV')
         id: deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
@@ -87,3 +87,28 @@ jobs:
       - name: Notificar en Slack (Error en Despliegue)
         run: |
           curl -X POST -H 'Content-type: application/json' --data '{"text":"Pipeline CI/CD para la rama ${{ github.ref }} falló durante el despliegue."}' ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  notifications:
+    runs-on: ubuntu-latest
+    name: Send custom JSON data to Slack
+    steps:
+      - name: Enviar notificación a Slack
+        id: slack
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload: |
+            {
+              "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
