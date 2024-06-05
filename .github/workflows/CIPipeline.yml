@@ -88,7 +88,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*Estado:* Exitoso\n*Rama:* ${{ github.ref }}\n*Autor:* ${{ github.event.head_commit.author.name }}\n*Comentario:* ${{ github.event.head_commit.message }}\n<${{ github.event.pull_request.html_url || github.event.head_commit.url }}|Ver commit>"
+                    "text": "*Despliegue exitoso para la rama* ${{ github.ref }}\n*Estado:* Exitoso\n*Rama:* ${{ github.ref }}\n*Autor:* ${{ github.event.head_commit.author.name }}\n*Comentario:* ${{ github.event.head_commit.message }}\n<${{ github.event.pull_request.html_url || github.event.head_commit.url }}|Ver commit>"
                   }
                 }
               ]
@@ -110,7 +110,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*Estado:* Fallo\n*Rama:* ${{ github.ref }}\n*Autor:* ${{ github.event.head_commit.author.name }}\n*Comentario:* ${{ github.event.head_commit.message }}\n<${{ github.event.pull_request.html_url || github.event.head_commit.url }}|Ver commit>"
+                    "text": "*Fallo en el despliegue para la rama* ${{ github.ref }}\n*Estado:* Fallo\n*Rama:* ${{ github.ref }}\n*Autor:* ${{ github.event.head_commit.author.name }}\n*Comentario:* ${{ github.event.head_commit.message }}\n<${{ github.event.pull_request.html_url || github.event.head_commit.url }}|Ver commit>"
                   }
                 }
               ]
