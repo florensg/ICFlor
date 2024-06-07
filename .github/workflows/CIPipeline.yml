@@ -8,8 +8,12 @@ on:
   pull_request:
     branches:
       - main
+<<<<<<< HEAD
   pull_request_target:
     types: [closed]
+=======
+      - DEV
+>>>>>>> c9428708fb3bb0e84c3d59509a94a654472c1424
 
 jobs:
   lint:
@@ -120,6 +124,11 @@ jobs:
         run: cp -r docs/* gh-pages/
 
       - name: Desplegar en GitHub Pages
+<<<<<<< HEAD
+=======
+        if: always() && needs.test.result == 'success' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/DEV')
+        id: deploy
+>>>>>>> c9428708fb3bb0e84c3d59509a94a654472c1424
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.PAT }}
