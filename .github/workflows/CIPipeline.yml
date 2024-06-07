@@ -96,7 +96,7 @@ jobs:
       - name: Crear Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT }}
           commit-message: "Auto PR from DEV to main"
           committer: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
           title: "Auto PR from DEV to main"
@@ -122,7 +122,7 @@ jobs:
       - name: Desplegar en GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          github_token: ${{ secrets.PAT }}
           publish_dir: ./gh-pages
 
   notify_deploy_success:
