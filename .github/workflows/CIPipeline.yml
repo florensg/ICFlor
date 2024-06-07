@@ -8,8 +8,6 @@ on:
   pull_request:
     branches:
       - main
-  pull_request_target:
-    types: [closed]
 
 jobs:
   lint:
@@ -108,7 +106,8 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
+    name: Despliegue en GitHub Pages
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Obtener código fuente
         uses: actions/checkout@v2
