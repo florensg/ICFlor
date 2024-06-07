@@ -90,6 +90,9 @@ jobs:
     needs: notify_dev_success
     if: github.ref == 'refs/heads/DEV' && needs.test.result == 'success'
     steps:
+      - name: Obtener código fuente
+        uses: actions/checkout@v2
+
       - name: Crear Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
