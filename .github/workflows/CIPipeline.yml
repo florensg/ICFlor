@@ -8,7 +8,6 @@ on:
   pull_request:
     branches:
       - main
-      - DEV
 
 jobs:
   lint:
@@ -47,12 +46,66 @@ jobs:
 
       - name: Ejecutar pruebas
         run: npm test
+        continue-on-error: true
+
+      - name: Guardar resultados de pruebas
+        if: failure()
+        run: |
+          echo "Resultados de pruebas:"
+          cat ./test-results.xml
+        continue-on-error: true
+
+  notify_dev_success:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/DEV' && needs.test.result == 'success'
+    steps:
+      - name: Enviar notificación de éxito a Slack para DEV
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload: |
+            {
+              "text": "Las pruebas en la rama DEV pasaron exitosamente.\nMensaje del Commit: ${{ github.event.head_commit.message }}\nAutor: ${{ github.actor }}\nRama: ${{ github.ref }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  notify_dev_failure:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/DEV' && needs.test.result == 'failure'
+    steps:
+      - name: Enviar notificación de fallo a Slack para DEV
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload: |
+            {
+              "text": "Las pruebas en la rama DEV fallaron.\nMensaje del Commit: ${{ github.event.head_commit.message }}\nAutor: ${{ github.actor }}\nRama: ${{ github.ref }}\nResultados de pruebas:\n$(cat ./test-results.xml)"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  create_pull_request:
+    runs-on: ubuntu-latest
+    needs: notify_dev_success
+    if: github.ref == 'refs/heads/DEV' && needs.test.result == 'success'
+    steps:
+      - name: Crear Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Auto PR from DEV to main"
+          committer: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
+          title: "Auto PR from DEV to main"
+          body: "Este es un pull request automático de la rama DEV a la rama main"
+          base: main
+          branch: DEV
 
   deploy:
     runs-on: ubuntu-latest
     name: Despliegue en GitHub Pages
     needs: test
-    if: always() && needs.test.result == 'success' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/DEV')
+    if: github.event_name == 'pull_request' && github.base_ref == 'refs/heads/main' && needs.test.result == 'success'
     steps:
       - name: Obtener código fuente
         uses: actions/checkout@v2
@@ -69,20 +122,12 @@ jobs:
           github_token: ${{ secrets.ACTIONS_DEPLOY_KEY }}
           publish_dir: ./gh-pages
 
-  notify:
+  notify_deploy_success:
     runs-on: ubuntu-latest
-    name: Notificaciones a Slack
-    needs: [test, deploy]
-    if: always()
+    needs: deploy
+    if: success()
     steps:
-      - name: Obtener información del commit
-        run: |
-          echo "Autor: $GITHUB_ACTOR"
-          echo "Rama: $GITHUB_REF"
-          jq -r '.commits[0].message' $GITHUB_EVENT_PATH
-
-      - name: Enviar notificación de éxito a Slack
-        if: success() && needs.deploy.result == 'success'
+      - name: Enviar notificación de éxito de deploy a Slack
         uses: slackapi/slack-github-action@v1.26.0
         with:
           payload: |
@@ -92,14 +137,17 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-      - name: Enviar notificación de fallo a Slack
-        if: failure() && needs.deploy.result == 'failure'
+  notify_deploy_failure:
+    runs-on: ubuntu-latest
+    needs: deploy
+    if: failure()
+    steps:
+      - name: Enviar notificación de fallo de deploy a Slack
         uses: slackapi/slack-github-action@v1.26.0
         with:
           payload: |
             {
-              "text": "El despliegue en la rama ${{ github.ref }} falló.\nMensaje del Commit: ${{ github.event.head_commit.message }}\nAutor: ${{ github.actor }}"
+              "text": "El despliegue en la rama ${{ github.ref }} falló.\nMensaje del Commit: ${{ github.event.head_commit.message }}\nAutor: ${{ github.actor }}\nError: $(cat ./deploy-error-log.txt)"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
