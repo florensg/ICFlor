@@ -107,7 +107,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     name: Despliegue en GitHub Pages
-    if: github.ref == 'refs/heads/main'
+    needs: [create_pull_request]
     steps:
       - name: Obtener código fuente
         uses: actions/checkout@v2
