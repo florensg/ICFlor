@@ -45,14 +45,9 @@ jobs:
         run: npm install
 
       - name: Ejecutar pruebas
-        run: npm test
-        continue-on-error: true
-
-      - name: Guardar resultados de pruebas
-        if: failure()
         run: |
-          echo "Resultados de pruebas:"
-          cat ./test-results.xml
+          mkdir -p test-results
+          npm test | tee test-results/results.txt
         continue-on-error: true
 
   notify_dev_success:
@@ -80,7 +75,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "Las pruebas en la rama DEV fallaron.\nMensaje del Commit: ${{ github.event.head_commit.message }}\nAutor: ${{ github.actor }}\nRama: ${{ github.ref }}\nResultados de pruebas:\n$(cat ./test-results.xml)"
+              "text": "Las pruebas en la rama DEV fallaron.\nMensaje del Commit: ${{ github.event.head_commit.message }}\nAutor: ${{ github.actor }}\nRama: ${{ github.ref }}\nResultados de pruebas:\n$(cat test-results/results.txt)"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
