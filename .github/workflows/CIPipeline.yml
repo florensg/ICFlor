@@ -52,6 +52,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Despliegue en GitHub Pages
     needs: test
+    if: needs.test.result == 'success'
     steps:
       - name: Obtener código fuente
         uses: actions/checkout@v2
@@ -63,8 +64,6 @@ jobs:
         run: cp -r docs/* gh-pages/
 
       - name: Desplegar en GitHub Pages
-        if: always() && needs.test.result == 'success' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
-        id: deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.ACTIONS_DEPLOY_KEY }}
