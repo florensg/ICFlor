@@ -72,7 +72,7 @@ jobs:
   notify_success:
     runs-on: ubuntu-latest
     needs: deploy
-    if: needs.deploy.result == 'success'
+    if: always() && needs.deploy.result == 'success'
     steps:
       - name: Notificar en Slack (Despliegue Exitoso)
         run: |
@@ -81,7 +81,7 @@ jobs:
   notify_failure:
     runs-on: ubuntu-latest
     needs: [test, deploy]
-    if: failure()
+    if: always() && failure()
     steps:
       - name: Notificar en Slack (Error en Despliegue)
         run: |
