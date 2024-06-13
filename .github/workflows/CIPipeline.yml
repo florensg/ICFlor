@@ -54,12 +54,11 @@ jobs:
         uses: act10ns/slack@v2.1.0
         with:
           status: ${{job.status}}
-        
+      
   deploy:
     runs-on: ubuntu-latest
     name: Despliegue en GitHub Pages
     needs: test
-    if: needs.test.result == 'success'
     steps:
       - name: Obtener código fuente
         uses: actions/checkout@v2
@@ -71,6 +70,7 @@ jobs:
         run: cp -r docs/* gh-pages/
 
       - name: Desplegar en GitHub Pages
+        if: needs.test.result == 'success'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.ACTIONS_DEPLOY_KEY }}
