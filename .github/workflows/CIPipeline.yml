@@ -81,8 +81,9 @@ jobs:
   notify_failure:
     runs-on: ubuntu-latest
     needs: [test, deploy]
-    if: always() && failure()
+    if: needs.test.result == 'failure'
     steps:
       - name: Notificar en Slack (Error en Despliegue)
         run: |
           curl -X POST -H 'Content-type: application/json' --data '{"text":"Pipeline CI/CD para la rama ${{ github.ref }} falló durante el despliegue."}' ${{ secrets.SLACK_WEBHOOK_URL }}
+      
