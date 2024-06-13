@@ -2,5 +2,5 @@
 const { helloWorld } = require('../docs/app');
 
 test('should return "Hello, florencia!"', () => {
-  expect(helloWorld()).toBe('Hello, flor!');
+  expect(helloWorld()).toBe('Hello, florencia!');
 });
