@@ -1,13 +1,150 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Web Project</title>
+    <title>ICFlor - Desarrollo Web Profesional</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1 id="header"></h1>
+    <header class="navbar">
+        <div class="container">
+            <h1 class="logo">🌸 ICFlor</h1>
+            <nav class="nav-links">
+                <a href="#acerca">Acerca de</a>
+                <a href="#herramientas">Herramientas</a>
+                <a href="#caracteristicas">Características</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero" id="acerca">
+            <div class="container">
+                <h1 class="hero-title">Bienvenido a ICFlor</h1>
+                <p class="hero-subtitle">Una aplicación web moderna construida con mejores prácticas de desarrollo</p>
+                <p class="hero-description" id="header"></p>
+            </div>
+        </section>
+
+        <!-- Descripción del Proyecto -->
+        <section class="descripcion">
+            <div class="container">
+                <h2>¿Qué es ICFlor?</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>🎯 Objetivo</h3>
+                        <p>ICFlor es más que una aplicación web simple. Es una demostración completa de ingeniería de software profesional, implementando un pipeline de CI/CD automatizado que garantiza calidad en cada línea de código.</p>
+                    </div>
+                    <div class="card">
+                        <h3>✨ Enfoque</h3>
+                        <p>Demostramos que incluso proyectos pequeños pueden beneficiarse de prácticas profesionales: testing automatizado, linting, control de versiones y despliegue continuo.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Características Técnicas -->
+        <section class="caracteristicas" id="caracteristicas">
+            <div class="container">
+                <h2>Características Técnicas</h2>
+                <div class="grid-3">
+                    <div class="feature">
+                        <span class="icon">🧪</span>
+                        <h3>Testing Automatizado</h3>
+                        <p>Jest para garantizar que cada función funciona correctamente</p>
+                    </div>
+                    <div class="feature">
+                        <span class="icon">🔍</span>
+                        <h3>Linting & Code Quality</h3>
+                        <p>ESLint asegura código limpio y consistente en todo el proyecto</p>
+                    </div>
+                    <div class="feature">
+                        <span class="icon">🔄</span>
+                        <h3>CI/CD Pipeline</h3>
+                        <p>GitHub Actions valida y despliega automáticamente cada cambio</p>
+                    </div>
+                    <div class="feature">
+                        <span class="icon">📦</span>
+                        <h3>Build Optimizado</h3>
+                        <p>Babel transpila para compatibilidad con navegadores antiguos</p>
+                    </div>
+                    <div class="feature">
+                        <span class="icon">🚀</span>
+                        <h3>GitHub Pages</h3>
+                        <p>Despliegue automático en cada push a la rama principal</p>
+                    </div>
+                    <div class="feature">
+                        <span class="icon">💬</span>
+                        <h3>Slack Notifications</h3>
+                        <p>Notificaciones en tiempo real del estado del pipeline</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stack Tecnológico -->
+        <section class="stack" id="herramientas">
+            <div class="container">
+                <h2>Stack Tecnológico</h2>
+                <p class="stack-description">ICFlor está construido con las herramientas más modernas del ecosistema JavaScript:</p>
+                
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <h4>Frontend</h4>
+                        <p>HTML5, CSS3, JavaScript ES6+</p>
+                    </div>
+                    <div class="tool-card">
+                        <h4>Testing</h4>
+                        <p>Jest + Babel-Jest</p>
+                    </div>
+                    <div class="tool-card">
+                        <h4>Code Quality</h4>
+                        <p>ESLint + @eslint/js</p>
+                    </div>
+                    <div class="tool-card">
+                        <h4>Build</h4>
+                        <p>Babel @babel/core & @babel/preset-env</p>
+                    </div>
+                    <div class="tool-card">
+                        <h4>Version Control</h4>
+                        <p>Git + GitHub</p>
+                    </div>
+                    <div class="tool-card">
+                        <h4>CI/CD</h4>
+                        <p>GitHub Actions + GitHub Pages</p>
+                    </div>
+                </div>
+
+                <div class="diagram-section">
+                    <h3>Pipeline de Desarrollo</h3>
+                    <p>La siguiente imagen muestra nuestro flujo de trabajo completo:</p>
+                    <img src="./pipeline-diagram.png" alt="Pipeline de CI/CD" class="pipeline-image" id="pipelineImage" style="cursor: pointer;" />
+                    <p class="image-hint">*Haz clic en la imagen para ampliarla</p>
+                </div>
+
+                <!-- Modal para ampliar imagen -->
+                <div id="imageModal" class="image-modal">
+                    <span class="close-modal">&times;</span>
+                    <img class="modal-image" id="modalImage" src="./pipeline-diagram.png" alt="Pipeline de CI/CD ampliado" />
+                </div>
+        </section>
+
+        <!-- Call to Action -->
+        <section class="cta">
+            <div class="container">
+                <h2>¿Listo para explorar?</h2>
+                <p>Visita el repositorio en GitHub para ver el código completo</p>
+                <a href="https://github.com/florensg/ICFlor" class="btn-primary" target="_blank">Ver en GitHub</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 ICFlor | Desarrollado con ❤️ por <a href="https://github.com/florensg">@florensg</a></p>
+    </footer>
+
     <script src="app.js"></script>
 </body>
 </html>
