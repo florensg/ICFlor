@@ -60,6 +60,8 @@ jobs:
     name: Despliegue en GitHub Pages
     needs: test
     if: needs.test.result == 'success'
+    permissions:
+      contents: write
     steps:
       - name: Obtener código fuente
         uses: actions/checkout@v2
@@ -73,5 +75,5 @@ jobs:
       - name: Desplegar en GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./gh-pages
