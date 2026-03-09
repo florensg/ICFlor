@@ -1,6 +1,6 @@
 # 🌸 ICFlor
 
-Una **aplicación web moderna** construida con mejores prácticas de desarrollo JavaScript, configurada con un pipeline de CI/CD completo y pruebas automatizadas.
+Una **aplicación web** construida con mejores prácticas de desarrollo JavaScript, configurada con un pipeline de CI/CD completo y pruebas automatizadas.
 
 ## 📋 Descripción del Proyecto
 
@@ -51,6 +51,14 @@ npm run lint:js
 # Construir el proyecto
 npm run build
 ```
+
+## 🌐 Página Desplegada
+
+Si el workflow fue ejecutado correctamente y pasó todas las pruebas, puedes visualizar la aplicación web en el siguiente enlace:
+
+🔗 **[Ver Aplicación en Vivo](https://florensg.github.io/ICFlor/)**
+
+La página se actualiza automáticamente cada vez que se realiza un push a la rama `main`. El pipeline de CI/CD se encarga de validar el código, ejecutar las pruebas y desplegar los cambios.
 
 ## 📁 Estructura del Proyecto
 
